@@ -11,9 +11,6 @@ const path = require('path');
 
   const jumptaskPage = await context.newPage();
   await jumptaskPage.goto('https://app.jumptask.io/earn?tags%5B%5D=Watch+%26+Profit#all_tasks', { waitUntil: 'load' });
-  // Take a screenshot for debugging
-  await jumptaskPage.screenshot({ path: 'page_debug.png', fullPage: true });
-console.log('Screenshot saved as page_debug.png after full page load');
   console.log('Page opened successfully using native Firefox viewport!');
 
   const containerSelector = 'div.MuiStack-root.css-dvxtzn > div.MuiGrid2-root.MuiGrid2-container.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-grow.css-hvx45w';
