@@ -53,12 +53,16 @@ const fs = require('fs');
       const boxDiv = jumptaskPage.locator('div.MuiBox-root.css-jl6j1q');
 
 try {
+  // Wait up to 30s for modal
   await boxDiv.waitFor({ state: 'visible', timeout: 30000 });
-  console.log('Modal appeared within 30s');
 } catch (err) {
-  console.log('Modal did not appear after 30s, taking screenshot...');
+  console.error('Modal did not appear within 30s. Taking screenshot...');
+
   await jumptaskPage.screenshot({ path: 'page_debug.png', fullPage: true });
-  throw err; // rethrow so loop continues to handle it as before
+
+  console.error('Screenshot saved as page_debug.png. Exiting script.');
+  await context.close();
+  process.exit(0); // Exit script with error code
 }
 
       // Step 1: Find quoted phrase
