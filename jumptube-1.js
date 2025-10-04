@@ -5,7 +5,7 @@ const fs = require('fs');
 (async () => {
   const profilePath = path.resolve(
     __dirname,
-    '/home/runner/work/jumptube-ubnam/jumptube-ubnam/firefox-profile-5'
+    'firefox-profile-1'
   );
 
   // Check if profile exists
@@ -25,10 +25,6 @@ const fs = require('fs');
     { waitUntil: 'load' }
   );
   console.log('Page opened successfully using native Firefox viewport!');
-
-// Take a screenshot for debugging
-  await jumptaskPage.screenshot({ path: 'page_debug.png', fullPage: true });
-  console.log('Screenshot saved as page_debug.png after full page load');
   
   const containerSelector =
     'div.MuiStack-root.css-dvxtzn > div.MuiGrid2-root.MuiGrid2-container.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-grow.css-hvx45w';
@@ -55,7 +51,7 @@ const fs = require('fs');
       console.log(`Clicked container #${index + 1}`);
 
       const boxDiv = jumptaskPage.locator('div.MuiBox-root.css-jl6j1q');
-      await boxDiv.waitFor({ state: 'visible', timeout: 5000 });
+      await boxDiv.waitFor({ state: 'visible', timeout: 20000 });
 
       // Step 1: Find quoted phrase
       const liElements = boxDiv.locator('li');
