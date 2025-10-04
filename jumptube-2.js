@@ -2,7 +2,7 @@ const { firefox } = require('playwright');
 const path = require('path');
 
 (async () => {
-  const profilePath = path.resolve(__dirname, 'firefox-profile-2');
+  const profilePath = path.resolve(__dirname, '/home/runner/work/jumptube-ubnam/jumptube-ubnam/firefox-profile-2');
 
   const context = await firefox.launchPersistentContext(profilePath, {
     headless: false,
