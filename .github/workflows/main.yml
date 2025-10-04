@@ -9,7 +9,6 @@ jobs:
   run-bots:
     runs-on: ubuntu-latest
     timeout-minutes: 330
-
     steps:
       # Checkout repository
       - name: Checkout repository
@@ -28,21 +27,26 @@ jobs:
           npm install playwright
           npx playwright install firefox
           sudo apt-get update
-          sudo apt-get install -y xvfb
+          sudo apt-get install -y unzip xvfb
 
-      # Extract Firefox profiles from tar.gz
-      - name: Extract Firefox profiles
+      # Unzip all Firefox profiles (without ./)
+      - name: Unzip Firefox profiles
         run: |
-          tar -xvzf firefox-profile-1.tar.gz -C firefox-profile-1
+          unzip -o firefox-profile-1.zip
+          unzip -o firefox-profile-2.zip
+          unzip -o firefox-profile-3.zip
 
       # Run Jumptube-1
       - name: Run Jumptube-1
         run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-1.js
         continue-on-error: true
 
-      # Upload screenshot
-      - name: Upload screenshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: jumptask-screenshot
-          path: page_debug.png
+      # Run Jumptube-2
+      - name: Run Jumptube-2
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-2.js
+        continue-on-error: true
+
+      # Run Jumptube-3
+      - name: Run Jumptube-3
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-3.js
+        continue-on-error: true
