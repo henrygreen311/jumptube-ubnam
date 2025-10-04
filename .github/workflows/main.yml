@@ -1,40 +1,52 @@
-name: Jumptube        
+name: Jumptube
 
-on:        
-  schedule:        
-    - cron: '0 */5 * * *'  # every 5 hours        
-  workflow_dispatch:        
+on:
+  schedule:
+    - cron: '0 */5 * * *'  # every 5 hours
+  workflow_dispatch:
 
-jobs:        
-  run-bots:        
-    runs-on: ubuntu-latest        
-    timeout-minutes: 330        
+jobs:
+  run-bots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    steps:        
-      # Checkout repository        
-      - name: Checkout repository        
-        uses: actions/checkout@v3        
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-      # Setup Node.js        
-      - name: Setup Node.js        
-        uses: actions/setup-node@v3        
-        with:        
-          node-version: '20'        
+      # Install Playwright locally in the runner
+      - name: Setup Playwright locally
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install firefox
+          sudo apt-get update
+          sudo apt-get install -y unzip xvfb
 
-      # Install Playwright locally in the runner        
-      - name: Setup Playwright locally        
-        run: |        
-          npm init -y        
-          npm install playwright        
-          npx playwright install firefox        
-          sudo apt-get update        
-          sudo apt-get install -y unzip xvfb        
+      # Unzip all Firefox profiles (without ./)
+      - name: Unzip Firefox profiles
+        run: |
+          unzip -o firefox-profile-1.zip -d firefox-profile-1
+          unzip -o firefox-profile-2.zip -d firefox-profile-2
+          unzip -o firefox-profile-3.zip -d firefox-profile-3
 
-      # Unzip Firefox profiles and list files        
-      - name: Unzip Firefox profiles        
-        run: |        
-          unzip -o firefox-profile-1.zip -d firefox-profile-1        
-          echo "Listing all files in current directory:"        
-          ls -l        
-          echo " Listing all files in extracted firefox-profile-1 directory:"        
-          pwd
+      # Run Jumptube-1
+      - name: Run Jumptube-1
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-1.js
+        continue-on-error: true
+
+      # Run Jumptube-2
+      - name: Run Jumptube-2
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-2.js
+        continue-on-error: true
+
+      # Run Jumptube-3
+      - name: Run Jumptube-3
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-3.js
+        continue-on-error: true
