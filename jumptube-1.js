@@ -50,19 +50,21 @@ const fs = require('fs');
       await childDivs.nth(index).click();
       console.log(`Clicked container #${index + 1}`);
 
-      const boxDiv = jumptaskPage.locator('div.MuiBox-root.css-jl6j1q');
+      const boxDiv = jumptaskPage.locator(
+  'div[role="presentation"] div.MuiBox-root.css-jl6j1q'
+);
 
+let modalVisible = false;
 try {
-  // Wait up to 30s for modal
-  await boxDiv.waitFor({ state: 'visible', timeout: 30000 });
+  await boxDiv.first().waitFor({ state: 'attached', timeout: 30000 });
+  modalVisible = await boxDiv.first().isVisible();
 } catch (err) {
-  console.error('Modal did not appear within 30s. Taking screenshot...');
+  console.log('Modal not found within 30s, skipping this container.');
+}
 
-  await jumptaskPage.screenshot({ path: 'page_debug.png', fullPage: true });
-
-  console.error('Screenshot saved as page_debug.png. Exiting script.');
-  await context.close();
-  process.exit(0); // Exit script with error code
+if (!modalVisible) {
+  // continue to next container without breaking script
+  continue;
 }
 
       // Step 1: Find quoted phrase
