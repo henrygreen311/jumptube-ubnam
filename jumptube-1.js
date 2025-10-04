@@ -5,7 +5,7 @@ const path = require('path');
   const profilePath = path.resolve(__dirname, 'firefox-profile-1');
 
   const context = await firefox.launchPersistentContext(profilePath, {
-    headless: false,
+    headless: true,
     viewport: null
   });
 
