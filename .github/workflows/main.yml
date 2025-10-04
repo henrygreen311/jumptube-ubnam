@@ -9,6 +9,7 @@ jobs:
   run-bots:
     runs-on: ubuntu-latest
     timeout-minutes: 330
+
     steps:
       # Checkout repository
       - name: Checkout repository
@@ -40,8 +41,9 @@ jobs:
       - name: Run Jumptube-1
         run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-1.js
         continue-on-error: true
-        
-     - name: Upload screenshot
+
+      # Upload screenshot
+      - name: Upload screenshot
         uses: actions/upload-artifact@v3
         with:
           name: jumptask-screenshot
