@@ -37,4 +37,4 @@ jobs:
           echo "Listing all files in current directory:"        
           ls -l        
           echo " Listing all files in extracted firefox-profile-1 directory:"        
-          ls -l 
+          pwd
