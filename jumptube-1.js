@@ -15,7 +15,7 @@ const fs = require('fs');
   }
 
   const context = await firefox.launchPersistentContext(profilePath, {
-    headless: false,
+    headless: true,
     viewport: null,
   });
 
@@ -50,8 +50,15 @@ const fs = require('fs');
       await childDivs.nth(index).click();
       console.log(`Clicked container #${index + 1}`);
 
-      const boxDiv = jumptaskPage.locator('div.MuiBox-root.css-jl6j1q');
-      await boxDiv.waitFor({ state: 'visible', timeout: 30000 });
+      const boxDiv = jumptaskPage.locator('div[role="dialog"]');
+
+try {
+  await boxDiv.waitFor({ state: 'visible', timeout: 10000 });
+} catch (e) {
+  console.log('Modal not visible, retrying click...');
+  await childDivs.nth(index).click();
+  await boxDiv.waitFor({ state: 'visible', timeout: 10000 });
+}
 
       // Step 1: Find quoted phrase
       const liElements = boxDiv.locator('li');
