@@ -14,37 +14,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install Node.js and Playwright
-      - name: Setup Node.js and Playwright
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Step 3: Install Playwright, unzip, Xvfb
+      - name: Install Playwright and tools
         run: |
-          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
           npm install -g playwright
           npx playwright install firefox
-
-      # Step 3: Install unzip and Xvfb
-      - name: Install tools
-        run: |
           sudo apt-get update
           sudo apt-get install -y unzip xvfb
 
-      # Step 4: Run Jumptube-1
-      - name: Run Jumptube-1
+      # Step 4: Unzip all Firefox profiles
+      - name: Unzip Firefox profiles
         run: |
           unzip -o firefox-profile-1.zip -d ./firefox-profile-1
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-1.js
-        continue-on-error: true
-
-      # Step 5: Run Jumptube-2
-      - name: Run Jumptube-2
-        run: |
           unzip -o firefox-profile-2.zip -d ./firefox-profile-2
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-2.js
+          unzip -o firefox-profile-3.zip -d ./firefox-profile-3
+
+      # Step 5: Run Jumptube-1
+      - name: Run Jumptube-1
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-1.js
         continue-on-error: true
 
-      # Step 6: Run Jumptube-3
+      # Step 6: Run Jumptube-2
+      - name: Run Jumptube-2
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-2.js
+        continue-on-error: true
+
+      # Step 7: Run Jumptube-3
       - name: Run Jumptube-3
-        run: |
-          unzip -o firefox-profile-3.zip -d ./firefox-profile-3
-          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-3.js
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" node jumptube-3.js
         continue-on-error: true
