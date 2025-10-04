@@ -5,27 +5,37 @@ const path = require('path');
   const profilePath = path.resolve(__dirname, 'firefox-profile-1');
 
   const context = await firefox.launchPersistentContext(profilePath, {
-    headless: true,
+    headless: false,
     viewport: null
   });
 
   const jumptaskPage = await context.newPage();
-  await jumptaskPage.goto('https://app.jumptask.io/earn?tags%5B%5D=Watch+%26+Profit#all_tasks');
-  console.log('Page opened successfully using native Firefox viewport!');
+  // Navigate to page and wait for network to be idle
+await jumptaskPage.goto(
+  'https://app.jumptask.io/earn?tags%5B%5D=Watch+%26+Profit#all_tasks', 
+  { waitUntil: 'networkidle' }
+);
 
-  const containerSelector = 'div.MuiStack-root.css-dvxtzn > div.MuiGrid2-root.MuiGrid2-container.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-grow.css-hvx45w';
-  await jumptaskPage.waitForSelector(containerSelector);
-  const container = jumptaskPage.locator(containerSelector);
-  const childDivSelector = 'div.MuiGrid2-root.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-12.MuiGrid2-grid-md-6.css-tnatjl';
-  const childDivs = container.locator(childDivSelector);
+// Wait for main container to appear
+const containerSelector = 'div.MuiStack-root.css-dvxtzn > div.MuiGrid2-root.MuiGrid2-container.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-grow.css-hvx45w';
+const container = jumptaskPage.locator(containerSelector);
 
-  const count = await childDivs.count();
-  console.log(`Found ${count} matching div(s) inside the container.`);
-  if (count === 0) {
-    console.log('No containers found, exiting successfully.');
-    await context.close();
-    return;
-  }
+// Wait up to 60s for the container to be visible
+await container.waitFor({ state: 'visible', timeout: 60000 });
+
+// Optional: extra buffer to let all child elements render
+await jumptaskPage.waitForTimeout(2000); // 2 seconds
+
+// Optional: verify child divs exist
+const childDivSelector = 'div.MuiGrid2-root.MuiGrid2-direction-xs-row.MuiGrid2-grid-xs-12.MuiGrid2-grid-md-6.css-tnatjl';
+const childDivs = container.locator(childDivSelector);
+const count = await childDivs.count();
+
+if (count === 0) {
+  console.log('No child containers found — page might not have fully loaded yet.');
+} else {
+  console.log(`Found ${count} child containers.`);
+}
 
   let checkboxClicked = false; // Track checkbox click only on first run
 
