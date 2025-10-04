@@ -5,7 +5,7 @@ const fs = require('fs');
 (async () => {
   const profilePath = path.resolve(
     __dirname,
-    '/home/runner/work/jumptube-ubnam/jumptube-ubnam/firefox-profile-1'
+    '/home/runner/work/jumptube-ubnam/jumptube-ubnam/firefox-profile-5'
   );
 
   // Check if profile exists
