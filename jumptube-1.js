@@ -35,8 +35,8 @@ const path = require('path');
       await childDivs.nth(index).click();
       console.log(`Clicked container #${index + 1}`);
 
-      const boxDiv = jumptaskPage.locator('div.MuiBox-root.css-jl6j1q');
-      await boxDiv.waitFor({ state: 'visible', timeout: 10000 });
+      const boxDiv = jumptaskPage.locator('//body/div[last()]/div[3]/div');
+await boxDiv.waitFor({ state: 'visible', timeout: 20000 });
 
       // Step 1: Find quoted phrase
       const liElements = boxDiv.locator('li');
